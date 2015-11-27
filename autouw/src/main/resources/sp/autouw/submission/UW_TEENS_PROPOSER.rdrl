@@ -1,0 +1,15 @@
+package sp.autouw.submission;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.PolicyHolderVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+
+rule "UW_TEENS_PROPOSER"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( policyHolder.age < 18 )
+		$validateContext : RuleValidateContext( returnFlag == false )
+	then
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "UW_TEENS_PROPOSER", "Manual UW is necessary for less than 18 years old proposer." );
+end

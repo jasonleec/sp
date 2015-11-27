@@ -1,0 +1,14 @@
+package sp.autouw.submission;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+
+rule "UW_BLACKLIST_AGENT"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( issueAgent != null , issueAgent.isBlacklisted == true )
+		$validateContext : RuleValidateContext( returnFlag == false )
+	then
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "UW_BLACKLIST_AGENT", "The issue agent is in blacklist, need manual UW." );
+end

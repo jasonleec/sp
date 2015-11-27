@@ -1,0 +1,18 @@
+package sp.autouw.beforecalc.coverage;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.CoverageVO;
+import com.ebao.ls.sp.rule.vo.CoverageInvestVO;
+import com.ebao.ls.sp.rule.vo.CoverageInvestRateVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+
+rule "NUW_SHARE_RATE_FUND_1"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( masterCoverage != null , masterCoverage.product != null , masterCoverage.product.benefitType in ( "41", "42" ) )
+		$coverage : CoverageVO( recurringTopupInvestRates.empty, premInvestRates.empty, singleTopupInvestRates.empty)
+		validateContext : RuleValidateContext( returnFlag == false )
+	then
+		validateContext.addRuleResultVO( $proposal.getPolicyId(), "NUW_SHARE_RATE_FUND", "At least one fund should be entered for "+$coverage.getProduct().getInternalId()+"." );
+end

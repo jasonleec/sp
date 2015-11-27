@@ -1,0 +1,15 @@
+package sp.autouw.submission;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+
+rule "UW_BMI_INSURED_5"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( mainInsured != null , mainInsured.age.intValue() < 18 , mainInsured.BMI.doubleValue() < 12.0 || mainInsured.BMI.doubleValue() > 23.0 )
+		$validateContext : RuleValidateContext( returnFlag == false )
+	then
+		String msg = "If life assured is: age less than 18 years old and gender = Male, the BMI should be between [12,23]. Actual BMI of "+ $proposal.getMainInsured().getName()+" is "+$proposal.getMainInsured().getBMI()+".";
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "NUW_SHARE_RATE_FUND", msg );
+end

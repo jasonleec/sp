@@ -1,0 +1,11 @@
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <kbase name="beforeCalc" default="false" eventProcessingMode="stream" equalsBehavior="identity" packages="sp.autouw.beforecalc.*">
+    <ksession name="beforeCalcSession" type="stateful" default="false" clockType="realtime"/>
+  </kbase>
+  <kbase name="submission" default="false" eventProcessingMode="stream" equalsBehavior="identity" packages="sp.autouw.*">
+    <ksession name="submissionSession" type="stateful" default="false" clockType="realtime"/>
+  </kbase>
+  <kbase name="afterCalc" default="false" eventProcessingMode="stream" equalsBehavior="identity" packages="sp.autouw.aftercalc.*">
+    <ksession name="afterCalcSession" type="stateful" default="false" clockType="realtime"/>
+  </kbase>
+</kmodule>
