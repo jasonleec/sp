@@ -1,0 +1,15 @@
+package sp.autouw.aftercalc;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.CoverageVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+
+rule "NUW_MAX_SA_COVERAGE_1"
+	dialect "java"
+	no-loop true
+	when
+		$validateContext : RuleValidateContext( returnFlag == false )
+		$proposal : ProposalVO( masterCoverage.product.unitFlag != "1" , masterCoverage.sumAssured > $proposal.masterCoverage.product.maxSumAssured )
+	then
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "NUW_MIN_SA_COVERAGE", "\"Sum assured of \"+$proposal.getMasterCoverage().getProduct().getInternalId() +\" should be between \"+$proposal.getMasterCoverage().getProduct().getMinSumAssured()+\" and \"+$proposal.getMasterCoverage().getProduct().getMaxSumAssured()+\".\"" );
+end

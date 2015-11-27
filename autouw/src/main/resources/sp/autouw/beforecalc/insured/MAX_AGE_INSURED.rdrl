@@ -1,0 +1,17 @@
+package sp.autouw.beforecalc.insured;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.InsuredVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+import com.ebao.ls.sp.rule.vo.CoverageVO;
+import com.ebao.ls.sp.rule.vo.CoverageInsuredVO;
+
+rule "MAX_AGE_INSURED"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( $entryAgeOfMaxUnit : masterCoverage.insureds.get(0).entryAgeOfMaxUnit != null , $maxInsuredAge : masterCoverage.product.maxInsuredAge != null , eval( $entryAgeOfMaxUnit > $maxInsuredAge ))
+		$validateContext : RuleValidateContext( returnFlag == false )
+	then
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "MAX_AGE_INSURED", "\"Invalid age. Age of insured \"+$proposal.getMainInsured().getName()+\" for \"+$proposal.getMasterCoverage().getProduct().getInternalId() +\" must be no more than \"+$proposal.getMasterCoverage().getProduct().getMaxInsuredAge()+\".\"" );
+end

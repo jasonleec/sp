@@ -1,0 +1,15 @@
+package sp.autouw.beforecalc.coverage;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.CoverageVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+
+rule "UW_MIN_DEFERRED_TERM"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( masterCoverage.deferredPeriod != null , masterCoverage.deferredTerm != null , masterCoverage.deferredTerm < $proposal.masterCoverage.product.minDeferredTerm )
+		$validateContext : RuleValidateContext( returnFlag == false )
+	then
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "UW_MIN_DEFERRED_TERM", "Annuity deferred start date should be after "+ $proposal.getMasterCoverage().getProduct().getMinDeferredTerm() +" anniversary date." );
+end

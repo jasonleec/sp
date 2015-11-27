@@ -1,0 +1,16 @@
+package sp.autouw.submission;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+import com.ebao.ls.sp.rule.vo.CoverageInsuredVO;
+import com.ebao.ls.sp.rule.vo.CoverageVO;
+
+rule "RJ_OCCUPATION_CLASS"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( $insuredOcupationClass : masterCoverage.insureds.get(0).occupClass != null , eval( $insuredOcupationClass > 3 ))
+		$validateContext : RuleValidateContext( returnFlag == false )
+	then
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "RJ_OCCUPATION_CLASS", "The insured's job class is too high, need manual uw." );
+end

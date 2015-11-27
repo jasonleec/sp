@@ -1,0 +1,17 @@
+package sp.autouw.beforecalc.insured;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.InsuredVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+import com.ebao.ls.sp.rule.vo.CoverageVO;
+import com.ebao.ls.sp.rule.vo.CoverageInsuredVO;
+
+rule "UW_MAX_DEFERMENT_AGE"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( $minDeferredAge : masterCoverage.insureds.get(0).maxDeferredAge != null , $minAllowDeferredAge : masterCoverage.product.maxDeferredAge != null , eval( $minDeferredAge > $minAllowDeferredAge ))
+		$validateContext : RuleValidateContext( returnFlag == false )
+	then
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "MIN_AGE_INSURED", "\"Annuity deferment age should be no more than \"+ $proposal.getMasterCoverage().getProduct().getMaxDeferredAge()+\".\"" );
+end

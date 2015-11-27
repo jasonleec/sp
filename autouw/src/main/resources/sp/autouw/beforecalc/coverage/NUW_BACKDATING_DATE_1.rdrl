@@ -1,0 +1,14 @@
+package sp.autouw.beforecalc.coverage;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.CoverageVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+
+rule "NUW_BACKDATING_DATE_1"
+	dialect "java"
+	when
+		$proposal : ProposalVO( backdatingIndi == "Y" , masterCoverage != null , masterCoverage.product != null , masterCoverage.product.startBackdate > $proposal.commencementDate )
+		$validateContext : RuleValidateContext( returnFlag == false )
+	then
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "NUW_BACKDATING_DATE", "Backdating date of "+$proposal.getMasterCoverage().getProduct().getInternalId()+" cannot be earlier than start backdating date pre-defined "+ $proposal.getMasterCoverage().getProduct().getStartBackdate() );
+end

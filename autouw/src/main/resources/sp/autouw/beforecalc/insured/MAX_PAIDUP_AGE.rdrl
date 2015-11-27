@@ -1,0 +1,17 @@
+package sp.autouw.beforecalc.insured;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.InsuredVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+import com.ebao.ls.sp.rule.vo.CoverageVO;
+import com.ebao.ls.sp.rule.vo.CoverageInsuredVO;
+
+rule "MAX_PAIDUP_AGE"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( $entryAgeOfMinUnit : masterCoverage.insureds.get(0).maxPaidupAge != null , $allowedMinAge : masterCoverage.product.maxPaidupAge != null , eval( $entryAgeOfMinUnit < $allowedMinAge ))
+		$validateContext : RuleValidateContext( returnFlag == false )
+	then
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "MIN_AGE_INSURED", "The payment term is larger than the maximum paid-up age." );
+end
