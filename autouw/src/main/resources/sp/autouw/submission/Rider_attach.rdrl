@@ -1,9 +1,0 @@
-package sp.autouw.submission;
-
-import java.lang.Number;
-
-rule "Rider_attach"
-	dialect "mvel"
-	when
-	then
-end
