@@ -1,0 +1,15 @@
+package sp.autouw.beforecalc.coverage;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.CoverageVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+
+rule "UW_MIN_WITHDRAW_START_TERM"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( masterCoverage.withdrawStartPeriod != null , masterCoverage.withdrawStartTerm != null , masterCoverage.withdrawStartTerm < $proposal.masterCoverage.product.minWithdrawTerm )
+		$validateContext : RuleValidateContext( returnFlag == false )
+	then
+		$validateContext.addRuleResultVO( $proposal.getPolicyId(), "UW_MIN_WITHDRAW_START_TERM", "GMWB withdraw start date should be after "+ $proposal.getMasterCoverage().getProduct().getMinWithdrawTerm()+" anniversary date." );
+end

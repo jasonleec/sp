@@ -1,0 +1,22 @@
+package sp.autouw.beforecalc.coverage;
+
+import com.ebao.ls.sp.rule.vo.ProposalVO;
+import com.ebao.ls.sp.rule.vo.CoverageVO;
+import com.ebao.ls.sp.rule.vo.CoverageInvestVO;
+import com.ebao.ls.sp.rule.vo.CoverageInvestRateVO;
+import com.ebao.ls.sp.rule.vo.RuleValidateContext;
+import java.math.BigDecimal;
+import java.lang.Number;
+
+rule "NUW_SHARE_RATE_FUND_2"
+	dialect "java"
+	no-loop true
+	when
+		$proposal : ProposalVO( masterCoverage != null , masterCoverage.product != null , masterCoverage.product.benefitType in ( "41", "42" ) , $rates : masterCoverage.recurringTopupInvestRates != null )
+		Number( doubleValue() != 1.0 ) from accumulate ( 		CoverageInvestRateVO( $assignRate : assignRate.doubleValue() != null ) from $rates
+,
+			sum($assignRate)) 
+		validateContext : RuleValidateContext( returnFlag == false )
+	then
+		validateContext.addRuleResultVO( $proposal.getPolicyId(), "NUW_SHARE_RATE_FUND", "At least one fund should be entered for \"+$coverage.getProduct().getInternalId()+\"." );
+end
